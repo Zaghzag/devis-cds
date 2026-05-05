@@ -11,21 +11,20 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,system-ui,sans-serif;background:#f5f4f0;color:#1a1a1a;font-size:14px;-webkit-text-size-adjust:100%;min-height:100vh}
-.screen{display:none;padding:12px;min-height:100vh}
+.screen{display:none;padding:12px;padding-bottom:40px;min-height:100vh}
 .screen.active{display:block}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;position:sticky;top:0;background:#f5f4f0;z-index:100;padding:8px 0}
 .topbar-title{font-size:16px;font-weight:700;color:#1a1a1a}
 .topbar-sub{font-size:11px;color:#999}
-.icon-btn{background:none;border:1px solid #ddd;border-radius:8px;padding:7px 10px;font-size:15px;cursor:pointer;color:#444;white-space:nowrap;display:flex;align-items:center;gap:5px}
-.icon-btn span{font-size:11px;font-weight:500}
-.icon-btn:hover{background:#eee}
+.icon-btn{background:none;border:1px solid #ddd;border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;color:#444;white-space:nowrap;display:flex;align-items:center;gap:4px}
 .icon-btn.dark{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.save-indicator{font-size:10px;color:#27ae60;text-align:center;height:14px;margin-bottom:4px}
 .card{background:#fff;border:1px solid #e0dfd8;border-radius:10px;padding:14px 16px;margin-bottom:10px}
 .stitle{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 label{font-size:12px;color:#666;display:block;margin-bottom:3px}
 input[type=number],input[type=text],select,textarea{width:100%;font-size:14px;padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fafaf8;color:#1a1a1a;-webkit-appearance:none}
 input:focus,select:focus,textarea:focus{outline:none;border-color:#999}
-textarea{resize:vertical;min-height:64px;font-family:-apple-system,system-ui,sans-serif;font-size:14px}
+textarea{resize:vertical;min-height:60px;font-family:-apple-system,system-ui,sans-serif}
 .r4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
 .ph{display:flex;align-items:center;gap:8px;margin-bottom:10px}
@@ -36,7 +35,7 @@ textarea{resize:vertical;min-height:64px;font-family:-apple-system,system-ui,san
 .calcbtn{width:100%;padding:14px;background:#1a1a1a;border:none;border-radius:10px;cursor:pointer;font-size:15px;font-weight:700;color:#fff;margin-bottom:10px}
 .div{border:none;border-top:1px solid #eee;margin:10px 0}
 .sl{font-size:11px;color:#999;margin:8px 0 6px;font-weight:600}
-.prev{font-size:11px;color:#666;margin-top:4px;min-height:14px;font-style:italic}
+.prev{font-size:11px;color:#27ae60;margin-top:4px;min-height:14px;font-weight:500}
 .prow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px;margin-bottom:6px;min-height:30px}
 .prow-left{display:flex;align-items:center;gap:6px;font-size:13px;color:#1a1a1a}
 .prow-left input[type=checkbox]{width:18px;height:18px;margin:0;flex-shrink:0}
@@ -48,10 +47,15 @@ textarea{resize:vertical;min-height:64px;font-family:-apple-system,system-ui,san
 .volet-row{display:grid;grid-template-columns:1fr 1fr 80px 60px 28px;gap:6px;align-items:end;margin-bottom:6px}
 .mb{border:1px solid #eee;border-radius:8px;padding:10px 12px;margin-bottom:8px}
 .mt{font-size:12px;font-weight:700;color:#333;margin-bottom:6px}
-.note-toggle{font-size:11px;color:#aaa;cursor:pointer;border:none;background:none;padding:4px 0;text-align:left;margin-top:2px;display:block}
-.note-toggle:hover{color:#666}
+.note-toggle{font-size:11px;color:#888;cursor:pointer;border:none;background:none;padding:5px 0;text-align:left;margin-top:4px;display:inline-block}
 .note-zone{margin-top:6px}
 .hidden{display:none}
+.canvas-wrap{position:relative;margin-top:6px;border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;touch-action:none}
+.canvas-wrap canvas{display:block;touch-action:none}
+.canvas-toolbar{display:flex;gap:6px;padding:6px 8px;background:#fafaf8;border-bottom:1px solid #eee;align-items:center}
+.canvas-toolbar button{background:none;border:1px solid #ddd;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer;color:#444}
+.canvas-toolbar button.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.canvas-toolbar input[type=color]{width:28px;height:28px;border:1px solid #ddd;border-radius:6px;padding:2px;cursor:pointer}
 .total-block{background:#1a1a1a;color:#fff;border-radius:10px;padding:14px 16px;margin-bottom:10px}
 .total-block .line{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
 .total-block .line.big{font-size:18px;font-weight:700;margin-top:8px;padding-top:8px;border-top:1px solid #444}
@@ -66,16 +70,13 @@ textarea{resize:vertical;min-height:64px;font-family:-apple-system,system-ui,san
 .hist-info{flex:1;min-width:0}
 .hist-name{font-size:14px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hist-date{font-size:11px;color:#999;margin-top:2px}
-.hist-ttc{font-size:13px;font-weight:700;color:#1a1a1a}
+.hist-total{font-size:13px;font-weight:700;color:#1a1a1a}
 .hist-actions{display:flex;gap:6px;flex-shrink:0}
 .hist-btn{border:1px solid #ddd;background:none;border-radius:7px;padding:6px 10px;font-size:12px;cursor:pointer;color:#444}
-.hist-btn:hover{background:#f0efeb}
 .hist-btn.red{color:#e74c3c;border-color:#e74c3c}
 .empty-state{text-align:center;color:#bbb;font-size:13px;padding:40px 0}
 .bottom-actions{display:flex;gap:8px;margin-top:8px;margin-bottom:20px}
-.bottom-actions button{flex:1;padding:12px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500}
-.btn-secondary{background:none;border:1px solid #ccc;color:#666}
-.btn-secondary:hover{background:#f0efeb}
+.bottom-actions button{flex:1;padding:12px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;background:none;border:1px solid #ccc;color:#666}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:flex-end;justify-content:center}
 .modal-overlay.hidden{display:none}
 .modal{background:#fff;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:500px}
@@ -89,69 +90,75 @@ textarea{resize:vertical;min-height:64px;font-family:-apple-system,system-ui,san
 </head>
 <body>
 
+<!-- HISTORIQUE -->
 <div class="screen active" id="screen-history">
   <div class="topbar">
-    <div>
-      <div class="topbar-title">📋 Devis</div>
-      <div class="topbar-sub">Couleurs du Sud</div>
-    </div>
+    <div><div class="topbar-title">📋 Devis</div><div class="topbar-sub">Couleurs du Sud</div></div>
     <button class="icon-btn dark" onclick="newDevis()">+ Nouveau</button>
   </div>
   <div id="hist-list"></div>
 </div>
 
+<!-- CALCULATEUR -->
 <div class="screen" id="screen-calc">
   <div class="topbar">
     <button class="icon-btn" onclick="showHistory()">← Retour</button>
     <div style="flex:1;text-align:center">
       <div id="devis-name-display" style="font-size:14px;font-weight:700;color:#1a1a1a;cursor:pointer" onclick="renameDevis()">—</div>
-      <div id="devis-date-display" style="font-size:11px;color:#999"></div>
+      <div id="devis-date-display" style="font-size:10px;color:#999"></div>
     </div>
-    <button class="icon-btn" id="eyeBtn" onclick="togglePrices()">👁 <span id="eyeText">Masquer</span></button>
+    <button class="icon-btn" onclick="undo()" id="undoBtn" style="opacity:0.3;pointer-events:none">↩</button>
+    <button class="icon-btn" onclick="togglePrices()">👁 <span id="eyeText">Masquer</span></button>
   </div>
+  <div class="save-indicator" id="save-indicator"></div>
+
   <div class="stitle" style="margin-bottom:8px">Pièces</div>
   <div id="pc"></div>
   <button class="addbtn" onclick="addP()">+ Ajouter une pièce</button>
+
   <div class="card">
     <div class="stitle" style="margin-bottom:8px">Forfaits généraux</div>
-    <label class="ck-label"><input type="checkbox" id="f-echaf"> Montage/démontage échafaudage (<span class="euro">450 €</span>)</label>
+    <label class="ck-label"><input type="checkbox" id="f-echaf" onchange="autoSaveWithUndo()"> Montage/démontage échafaudage (<span class="euro">450 €</span>)</label>
   </div>
+
   <div class="card">
     <div class="stitle" style="margin-bottom:10px">Menuiseries</div>
     <div class="mb">
       <div class="mt">Portes et cadres</div>
       <div id="pl"></div>
       <button class="addbtn" style="margin-bottom:0;margin-top:4px" onclick="addPorte()">+ Ajouter une porte</button>
-      <button class="note-toggle" onclick="toggleNote('note-portes')">✏️ Remarques</button>
-      <div class="note-zone hidden" id="note-portes"><textarea placeholder="Remarques portes..."></textarea></div>
+      <button class="note-toggle" onclick="toggleZone('note-portes')">✏️ Notes</button>
+      <div class="note-zone hidden" id="note-portes"><textarea placeholder="Notes portes..." oninput="autoSave()" onfocus="pushUndo()"></textarea></div>
     </div>
     <div class="mb">
       <div class="mt">Fenêtres</div>
       <div id="fl"></div>
       <button class="addbtn" style="margin-bottom:0;margin-top:4px" onclick="addFen()">+ Ajouter une fenêtre</button>
-      <button class="note-toggle" onclick="toggleNote('note-fenetres')">✏️ Remarques</button>
-      <div class="note-zone hidden" id="note-fenetres"><textarea placeholder="Remarques fenêtres..."></textarea></div>
+      <button class="note-toggle" onclick="toggleZone('note-fenetres')">✏️ Notes</button>
+      <div class="note-zone hidden" id="note-fenetres"><textarea placeholder="Notes fenêtres..." oninput="autoSave()" onfocus="pushUndo()"></textarea></div>
     </div>
     <div class="mb">
       <div class="mt">Volets bois (<span class="euro">90 €/m²</span> · 2 faces)</div>
       <div id="vl"></div>
       <button class="addbtn" style="margin-bottom:0;margin-top:4px" onclick="addVolet()">+ Ajouter un volet</button>
-      <button class="note-toggle" onclick="toggleNote('note-volets')">✏️ Remarques</button>
-      <div class="note-zone hidden" id="note-volets"><textarea placeholder="Remarques volets..."></textarea></div>
+      <button class="note-toggle" onclick="toggleZone('note-volets')">✏️ Notes</button>
+      <div class="note-zone hidden" id="note-volets"><textarea placeholder="Notes volets..." oninput="autoSave()" onfocus="pushUndo()"></textarea></div>
     </div>
   </div>
+
   <button class="calcbtn" onclick="calc()">Calculer le devis</button>
+
   <div id="rz" class="hidden">
     <div class="total-block" id="total-block"></div>
     <div class="card"><table class="rt" id="rtbl"></table></div>
     <div class="bottom-actions">
-      <button class="btn-secondary" onclick="copyR()">📋 Copier MEG</button>
-      <button class="btn-secondary" onclick="exportPDF()">📄 Exporter PDF</button>
+      <button onclick="copyR()">📋 Copier MEG</button>
+      <button onclick="exportPDF()">📄 Exporter PDF</button>
     </div>
   </div>
-  <div style="height:30px"></div>
 </div>
 
+<!-- MODAL RENOMMER -->
 <div class="modal-overlay hidden" id="rename-modal">
   <div class="modal">
     <h3>Nommer le devis</h3>
@@ -167,17 +174,55 @@ textarea{resize:vertical;min-height:64px;font-family:-apple-system,system-ui,san
 let pricesHidden=false;
 let currentDevisId=null;
 let pieces=[],pCnt=0,portes=[],ptCnt=0,fens=[],fCnt=0,volets=[],vCnt=0;
+let saveTimer=null;
+let canvases={};
+let undoStack=[];
+const MAX_UNDO=30;
+
+function pushUndo(){
+  const state=captureState();
+  undoStack.push(JSON.stringify(state));
+  if(undoStack.length>MAX_UNDO)undoStack.shift();
+  const btn=document.getElementById('undoBtn');
+  if(btn){btn.style.opacity='1';btn.style.pointerEvents='auto';}
+}
+
+function undo(){
+  if(undoStack.length<1)return;
+  const prev=undoStack.pop();
+  if(!prev)return;
+  const state=JSON.parse(prev);
+  // Reset tout
+  pieces=[];pCnt=0;portes=[];ptCnt=0;fens=[];fCnt=0;volets=[];vCnt=0;canvases={};
+  document.getElementById('f-echaf').checked=false;
+  document.getElementById('pc').innerHTML='';
+  document.getElementById('pl').innerHTML='';
+  document.getElementById('fl').innerHTML='';
+  document.getElementById('vl').innerHTML='';
+  document.querySelector('#note-portes textarea').value='';
+  document.querySelector('#note-fenetres textarea').value='';
+  document.querySelector('#note-volets textarea').value='';
+  restoreState(state);
+  // Sauvegarder le nouvel état
+  if(!currentDevisId)return;
+  const h=loadHistory();const idx=h.findIndex(d=>d.id===currentDevisId);
+  if(idx>-1){h[idx].data=state;saveHistory(h);}
+  const ind=document.getElementById('save-indicator');
+  if(ind){ind.textContent='↩ Annulé';setTimeout(()=>{ind.textContent='';},2000);}
+  if(undoStack.length===0){const btn=document.getElementById('undoBtn');if(btn){btn.style.opacity='0.3';btn.style.pointerEvents='none';}}
+}
 
 const PREST=[
-  {id:'detap',    label:'Détapissage',                     pu:5,    u:'m²',zone:'murs'},
-  {id:'impres',   label:'Impression glycéro',               pu:6,    u:'m²',zone:'choice'},
-  {id:'enduit',   label:'Enduit de rebouchage',             pu:15,   u:'m²',zone:'choice'},
-  {id:'peint',    label:'Mise en peinture',                 pu:16.5, u:'m²',zone:'choice'},
-  {id:'papier',   label:'Pose papier peint (colle fournie)',pu:55,   u:'m²',zone:'murs'},
-  {id:'chaux',    label:'Chaux brossée Ressource',          pu:47,   u:'m²',zone:'murs'},
-  {id:'dep_pl',   label:'Dépose et évacuation plinthes',   pu:6,    u:'ML', zone:'ml'},
-  {id:'four_pl',  label:'Fourniture plinthe bois',          pu:18,   u:'ML', zone:'ml'},
-  {id:'peint_pl2',label:'Peinture plinthe bois',            pu:8,    u:'ML', zone:'ml'},
+  {id:'detap',    label:'Détapissage',                      pu:5,    u:'m²', zone:'murs'},
+  {id:'impres',   label:'Impression glycéro',                pu:6,    u:'m²', zone:'choice', def:'murs'},
+  {id:'enduit',   label:'Enduit de rebouchage',              pu:15,   u:'m²', zone:'choice', def:'murs'},
+  {id:'peint',    label:'Mise en peinture',                  pu:16.5, u:'m²', zone:'choice', def:'both'},
+  {id:'papier',   label:'Pose papier peint (colle fournie)', pu:55,   u:'m²', zone:'murs'},
+  {id:'chaux',    label:'Chaux brossée Ressource',           pu:47,   u:'m²', zone:'murs'},
+  {id:'sol',      label:'Pose de sol (fourniture client)',   pu:25,   u:'m²', zone:'plaf'},
+  {id:'dep_pl',   label:'Dépose et évacuation plinthes',     pu:6,    u:'ML', zone:'ml'},
+  {id:'four_pl',  label:'Fourniture plinthe bois',           pu:18,   u:'ML', zone:'ml'},
+  {id:'peint_pl2',label:'Peinture plinthe bois',             pu:8,    u:'ML', zone:'ml'},
 ];
 const PRIX_P={
   'classique':{label:'Porte classique',p1:70,p2:140},
@@ -194,10 +239,27 @@ const PRIX_F={
   'pf_double':{label:'Porte-fenêtre double',p1:240,p2:450},
 };
 
-function loadHistory(){try{return JSON.parse(localStorage.getItem('cds_history')||'[]');}catch(e){return[];}}
-function saveHistory(h){localStorage.setItem('cds_history',JSON.stringify(h));}
+/* ===== STORAGE ===== */
+function loadHistory(){try{return JSON.parse(localStorage.getItem('cds_v2')||'[]');}catch(e){return[];}}
+function saveHistory(h){localStorage.setItem('cds_v2',JSON.stringify(h));}
 function todayStr(){const d=new Date();return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;}
 
+/* ===== AUTOSAVE ===== */
+function autoSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    saveCurrentDevis();
+    const ind=document.getElementById('save-indicator');
+    if(ind){ind.textContent='✓ Sauvegardé';setTimeout(()=>{ind.textContent='';},2000);}
+  },500);
+}
+
+function autoSaveWithUndo(){
+  pushUndo();
+  autoSave();
+}
+
+/* ===== HISTORIQUE ===== */
 function showHistory(){
   saveCurrentDevis();
   document.getElementById('screen-calc').classList.remove('active');
@@ -208,14 +270,14 @@ function showHistory(){
 function renderHistory(){
   const h=loadHistory();
   const c=document.getElementById('hist-list');
-  if(h.length===0){c.innerHTML=`<div class="empty-state">Aucun devis enregistré<br>Appuyez sur "+ Nouveau" pour commencer</div>`;return;}
+  if(!h.length){c.innerHTML=`<div class="empty-state">Aucun devis<br>Appuyez sur "+ Nouveau"</div>`;return;}
   c.innerHTML=h.map(d=>`
     <div class="hist-item">
       <div class="hist-info">
         <div class="hist-name">${d.name}</div>
         <div class="hist-date">${d.date}</div>
       </div>
-      <div class="hist-ttc euro">${d.ttc?d.ttc.toFixed(2)+' €':'—'}</div>
+      <div class="hist-total euro">${d.total?d.total.toFixed(2)+' € HT':'—'}</div>
       <div class="hist-actions">
         <button class="hist-btn" onclick="openDevis('${d.id}')">Ouvrir</button>
         <button class="hist-btn red" onclick="deleteDevis('${d.id}')">✕</button>
@@ -226,7 +288,7 @@ function renderHistory(){
 function newDevis(){
   const id='d_'+Date.now();
   const h=loadHistory();
-  h.unshift({id,name:'Nouveau devis',date:todayStr(),ttc:null,data:null});
+  h.unshift({id,name:'Nouveau devis',date:todayStr(),total:null,data:null});
   if(h.length>20)h.splice(20);
   saveHistory(h);
   loadDevis(id);
@@ -236,40 +298,53 @@ function openDevis(id){loadDevis(id);}
 
 function deleteDevis(id){
   if(!confirm('Supprimer ce devis ?'))return;
-  let h=loadHistory();
-  h=h.filter(d=>d.id!==id);
-  saveHistory(h);
-  renderHistory();
+  let h=loadHistory();h=h.filter(d=>d.id!==id);saveHistory(h);renderHistory();
 }
 
+/* ===== CHARGER DEVIS ===== */
 function loadDevis(id){
   currentDevisId=id;
   const h=loadHistory();
   const entry=h.find(d=>d.id===id)||{name:'Nouveau devis',date:todayStr(),data:null};
-  pieces=[];pCnt=0;portes=[];ptCnt=0;fens=[];fCnt=0;volets=[];vCnt=0;
+  // Reset
+  pieces=[];pCnt=0;portes=[];ptCnt=0;fens=[];fCnt=0;volets=[];vCnt=0;canvases={};
   document.getElementById('f-echaf').checked=false;
   document.getElementById('rz').classList.add('hidden');
+  document.querySelector('#note-portes textarea').value='';
+  document.querySelector('#note-fenetres textarea').value='';
+  document.querySelector('#note-volets textarea').value='';
+  document.getElementById('note-portes').classList.add('hidden');
+  document.getElementById('note-fenetres').classList.add('hidden');
+  document.getElementById('note-volets').classList.add('hidden');
+  document.getElementById('pc').innerHTML='';
+  document.getElementById('pl').innerHTML='';
+  document.getElementById('fl').innerHTML='';
+  document.getElementById('vl').innerHTML='';
+
   if(entry.data){restoreState(entry.data);}else{addP();}
+
   document.getElementById('devis-name-display').textContent=entry.name;
   document.getElementById('devis-date-display').textContent=entry.date;
   document.getElementById('screen-history').classList.remove('active');
   document.getElementById('screen-calc').classList.add('active');
 }
 
+/* ===== SAUVEGARDER ===== */
 function saveCurrentDevis(){
   if(!currentDevisId)return;
   const h=loadHistory();
   const idx=h.findIndex(d=>d.id===currentDevisId);
   if(idx===-1)return;
   h[idx].data=captureState();
-  if(window._tot)h[idx].ttc=window._tot.ttc;
+  if(window._lastTotal!==undefined)h[idx].total=window._lastTotal;
   saveHistory(h);
 }
 
-setInterval(()=>{if(currentDevisId)saveCurrentDevis();},10000);
-
+/* ===== CAPTURER L'ÉTAT ===== */
 function captureState(){
-  const state={pieces:[],echaf:document.getElementById('f-echaf')?.checked||false,portes:[],fens:[],volets:[],
+  const state={
+    pieces:[],echaf:document.getElementById('f-echaf')?.checked||false,
+    portes:[],fens:[],volets:[],
     note_portes:document.querySelector('#note-portes textarea')?.value||'',
     note_fenetres:document.querySelector('#note-fenetres textarea')?.value||'',
     note_volets:document.querySelector('#note-volets textarea')?.value||'',
@@ -278,13 +353,27 @@ function captureState(){
     note_volets_open:!document.getElementById('note-volets')?.classList.contains('hidden'),
   };
   pieces.forEach(p=>{
-    const pi={id:p.id,nom:document.getElementById(`pnom-${p.id}`)?.value||'',
-      m1:document.getElementById(`m1-${p.id}`)?.value||'',m2:document.getElementById(`m2-${p.id}`)?.value||'',
-      hh:document.getElementById(`hh-${p.id}`)?.value||'',nm:document.getElementById(`nm-${p.id}`)?.value||'4',
-      plaf:document.getElementById(`plaf-${p.id}`)?.value||'',haspl:document.getElementById(`has-pl-${p.id}`)?.checked||false,
+    const pi={
+      id:p.id,
+      nom:document.getElementById(`pnom-${p.id}`)?.value||'',
+      m1:document.getElementById(`m1-${p.id}`)?.value||'',
+      m2:document.getElementById(`m2-${p.id}`)?.value||'',
+      hh:document.getElementById(`hh-${p.id}`)?.value||'',
+      nm:document.getElementById(`nm-${p.id}`)?.value||'4',
+      plaf:document.getElementById(`plaf-${p.id}`)?.value||'',
+      haspl:document.getElementById(`has-pl-${p.id}`)?.checked||false,
       note:document.querySelector(`#note-p-${p.id} textarea`)?.value||'',
-      note_open:!document.getElementById(`note-p-${p.id}`)?.classList.contains('hidden'),prests:{}};
-    PREST.forEach(pr=>{pi.prests[pr.id]={ck:document.getElementById(`ck-${pr.id}-${p.id}`)?.checked||false,zone:document.getElementById(`zone-${pr.id}-${p.id}`)?.value||'murs'};});
+      note_open:!document.getElementById(`note-p-${p.id}`)?.classList.contains('hidden'),
+      canvas_open:!document.getElementById(`canvas-wrap-${p.id}`)?.classList.contains('hidden'),
+      canvas_data:canvases[p.id]?canvases[p.id].toDataURL():'',
+      prests:{}
+    };
+    PREST.forEach(pr=>{
+      pi.prests[pr.id]={
+        ck:document.getElementById(`ck-${pr.id}-${p.id}`)?.checked||false,
+        zone:document.getElementById(`zone-${pr.id}-${p.id}`)?.value||(pr.def||'murs')
+      };
+    });
     state.pieces.push(pi);
   });
   portes.forEach(p=>{state.portes.push({id:p.id,typ:document.getElementById(`ptyp-${p.id}`)?.value||'classique',qte:document.getElementById(`pqte-${p.id}`)?.value||'1',face:document.getElementById(`pface-${p.id}`)?.value||'2'});});
@@ -293,60 +382,63 @@ function captureState(){
   return state;
 }
 
+/* ===== RESTAURER L'ÉTAT ===== */
 function restoreState(s){
   document.getElementById('f-echaf').checked=s.echaf||false;
   s.pieces.forEach(pi=>{const id=pi.id;pCnt=Math.max(pCnt,id);pieces.push({id});});
   renderP();
   s.pieces.forEach(pi=>{
     const id=pi.id;
-    if(document.getElementById(`pnom-${id}`))document.getElementById(`pnom-${id}`).value=pi.nom||'';
-    if(document.getElementById(`m1-${id}`))document.getElementById(`m1-${id}`).value=pi.m1||'';
-    if(document.getElementById(`m2-${id}`))document.getElementById(`m2-${id}`).value=pi.m2||'';
-    if(document.getElementById(`hh-${id}`))document.getElementById(`hh-${id}`).value=pi.hh||'';
-    if(document.getElementById(`nm-${id}`))document.getElementById(`nm-${id}`).value=pi.nm||'4';
-    if(document.getElementById(`plaf-${id}`))document.getElementById(`plaf-${id}`).value=pi.plaf||'';
-    if(document.getElementById(`has-pl-${id}`))document.getElementById(`has-pl-${id}`).checked=pi.haspl||false;
-    if(pi.note&&document.querySelector(`#note-p-${id} textarea`))document.querySelector(`#note-p-${id} textarea`).value=pi.note;
+    const setVal=(eid,val)=>{const e=document.getElementById(eid);if(e)e.value=val||'';};
+    setVal(`pnom-${id}`,pi.nom);setVal(`m1-${id}`,pi.m1);setVal(`m2-${id}`,pi.m2);
+    setVal(`hh-${id}`,pi.hh);setVal(`nm-${id}`,pi.nm||'4');setVal(`plaf-${id}`,pi.plaf);
+    const hasPl=document.getElementById(`has-pl-${id}`);if(hasPl)hasPl.checked=pi.haspl||false;
+    const noteTA=document.querySelector(`#note-p-${id} textarea`);if(noteTA)noteTA.value=pi.note||'';
     if(pi.note_open)document.getElementById(`note-p-${id}`)?.classList.remove('hidden');
+    if(pi.canvas_open)document.getElementById(`canvas-wrap-${id}`)?.classList.remove('hidden');
+    if(pi.canvas_data&&pi.canvas_data!==''&&canvases[id]){
+      const img=new Image();img.onload=()=>{const ctx=canvases[id].getContext('2d');ctx.drawImage(img,0,0);};img.src=pi.canvas_data;
+    }
     PREST.forEach(pr=>{
       const ck=document.getElementById(`ck-${pr.id}-${id}`);
       const zo=document.getElementById(`zone-${pr.id}-${id}`);
       if(ck&&pi.prests&&pi.prests[pr.id])ck.checked=pi.prests[pr.id].ck||false;
-      if(zo&&pi.prests&&pi.prests[pr.id])zo.value=pi.prests[pr.id].zone||'murs';
+      if(zo&&pi.prests&&pi.prests[pr.id])zo.value=pi.prests[pr.id].zone||(pr.def||'murs');
     });
     upd(id);
   });
   s.portes.forEach(p=>{const id=p.id;ptCnt=Math.max(ptCnt,id);portes.push({id});});
   renderPortes();
   s.portes.forEach(p=>{
-    if(document.getElementById(`ptyp-${p.id}`))document.getElementById(`ptyp-${p.id}`).value=p.typ||'classique';
-    if(document.getElementById(`pqte-${p.id}`))document.getElementById(`pqte-${p.id}`).value=p.qte||'1';
-    if(document.getElementById(`pface-${p.id}`))document.getElementById(`pface-${p.id}`).value=p.face||'2';
+    const setVal=(eid,val)=>{const e=document.getElementById(eid);if(e)e.value=val||'';};
+    setVal(`ptyp-${p.id}`,p.typ);setVal(`pqte-${p.id}`,p.qte);setVal(`pface-${p.id}`,p.face);
   });
   s.fens.forEach(f=>{const id=f.id;fCnt=Math.max(fCnt,id);fens.push({id});});
   renderFens();
   s.fens.forEach(f=>{
-    if(document.getElementById(`ftyp-${f.id}`))document.getElementById(`ftyp-${f.id}`).value=f.typ||'simple';
-    if(document.getElementById(`fqte-${f.id}`))document.getElementById(`fqte-${f.id}`).value=f.qte||'1';
-    if(document.getElementById(`fface-${f.id}`))document.getElementById(`fface-${f.id}`).value=f.face||'2';
+    const setVal=(eid,val)=>{const e=document.getElementById(eid);if(e)e.value=val||'';};
+    setVal(`ftyp-${f.id}`,f.typ);setVal(`fqte-${f.id}`,f.qte);setVal(`fface-${f.id}`,f.face);
   });
   s.volets.forEach(vo=>{const id=vo.id;vCnt=Math.max(vCnt,id);volets.push({id});});
   renderVolets();
   s.volets.forEach(vo=>{
-    if(document.getElementById(`vl-${vo.id}`))document.getElementById(`vl-${vo.id}`).value=vo.l||'';
-    if(document.getElementById(`vh-${vo.id}`))document.getElementById(`vh-${vo.id}`).value=vo.h||'';
-    if(document.getElementById(`vq-${vo.id}`))document.getElementById(`vq-${vo.id}`).value=vo.q||'1';
-    updVolet(vo.id);
+    const setVal=(eid,val)=>{const e=document.getElementById(eid);if(e)e.value=val||'';};
+    setVal(`vl-${vo.id}`,vo.l);setVal(`vh-${vo.id}`,vo.h);setVal(`vq-${vo.id}`,vo.q);updVolet(vo.id);
   });
-  if(s.note_portes&&document.querySelector('#note-portes textarea'))document.querySelector('#note-portes textarea').value=s.note_portes;
-  if(s.note_fenetres&&document.querySelector('#note-fenetres textarea'))document.querySelector('#note-fenetres textarea').value=s.note_fenetres;
-  if(s.note_volets&&document.querySelector('#note-volets textarea'))document.querySelector('#note-volets textarea').value=s.note_volets;
-  if(s.note_portes_open)document.getElementById('note-portes')?.classList.remove('hidden');
-  if(s.note_fenetres_open)document.getElementById('note-fenetres')?.classList.remove('hidden');
-  if(s.note_volets_open)document.getElementById('note-volets')?.classList.remove('hidden');
+  if(s.note_portes)document.querySelector('#note-portes textarea').value=s.note_portes;
+  if(s.note_fenetres)document.querySelector('#note-fenetres textarea').value=s.note_fenetres;
+  if(s.note_volets)document.querySelector('#note-volets textarea').value=s.note_volets;
+  if(s.note_portes_open)document.getElementById('note-portes').classList.remove('hidden');
+  if(s.note_fenetres_open)document.getElementById('note-fenetres').classList.remove('hidden');
+  if(s.note_volets_open)document.getElementById('note-volets').classList.remove('hidden');
 }
 
-function renameDevis(){document.getElementById('rename-input').value=document.getElementById('devis-name-display').textContent;document.getElementById('rename-modal').classList.remove('hidden');setTimeout(()=>document.getElementById('rename-input').focus(),100);}
+/* ===== RENAME ===== */
+function renameDevis(){
+  document.getElementById('rename-input').value=document.getElementById('devis-name-display').textContent;
+  document.getElementById('rename-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('rename-input').focus(),100);
+}
 function closeModal(){document.getElementById('rename-modal').classList.add('hidden');}
 function confirmRename(){
   const val=document.getElementById('rename-input').value.trim();
@@ -358,47 +450,127 @@ function confirmRename(){
 }
 document.getElementById('rename-input').addEventListener('keydown',e=>{if(e.key==='Enter')confirmRename();});
 
-function addP(){const id=++pCnt;pieces.push({id});renderP();}
-function removeP(id){pieces=pieces.filter(p=>p.id!==id);renderP();}
+/* ===== CANVAS PENCIL ===== */
+function initCanvas(id){
+  const canvas=document.getElementById(`canvas-${id}`);
+  if(!canvas||canvases[id])return;
+  canvas.width=canvas.offsetWidth||320;
+  canvas.height=200;
+  const ctx=canvas.getContext('2d');
+  ctx.strokeStyle='#1a1a1a';ctx.lineWidth=1.5;ctx.lineCap='round';ctx.lineJoin='round';
+  canvases[id]=canvas;
+  let drawing=false,lastX=0,lastY=0,erasing=false;
+
+  function getPos(e){
+    const rect=canvas.getBoundingClientRect();
+    const scaleX=canvas.width/rect.width;
+    const scaleY=canvas.height/rect.height;
+    if(e.touches){return{x:(e.touches[0].clientX-rect.left)*scaleX,y:(e.touches[0].clientY-rect.top)*scaleY};}
+    return{x:(e.clientX-rect.left)*scaleX,y:(e.clientY-rect.top)*scaleY};
+  }
+
+  function startDraw(e){
+    e.preventDefault();drawing=true;
+    const p=getPos(e);lastX=p.x;lastY=p.y;
+    ctx.beginPath();ctx.moveTo(lastX,lastY);
+  }
+  function draw(e){
+    if(!drawing)return;e.preventDefault();
+    const p=getPos(e);
+    if(erasing){ctx.clearRect(p.x-10,p.y-10,20,20);}
+    else{ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);}
+    lastX=p.x;lastY=p.y;
+  }
+  function stopDraw(e){if(drawing){drawing=false;autoSave();}}
+
+  canvas.addEventListener('touchstart',startDraw,{passive:false});
+  canvas.addEventListener('touchmove',draw,{passive:false});
+  canvas.addEventListener('touchend',stopDraw);
+  canvas.addEventListener('mousedown',startDraw);
+  canvas.addEventListener('mousemove',draw);
+  canvas.addEventListener('mouseup',stopDraw);
+
+  // Boutons toolbar
+  document.getElementById(`btn-pen-${id}`).addEventListener('click',()=>{erasing=false;ctx.lineWidth=1.5;ctx.strokeStyle='#1a1a1a';document.getElementById(`btn-pen-${id}`).classList.add('active');document.getElementById(`btn-eraser-${id}`).classList.remove('active');});
+  document.getElementById(`btn-eraser-${id}`).addEventListener('click',()=>{erasing=true;document.getElementById(`btn-eraser-${id}`).classList.add('active');document.getElementById(`btn-pen-${id}`).classList.remove('active');});
+  document.getElementById(`btn-clear-${id}`).addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height);autoSave();});
+  document.getElementById(`btn-color-${id}`).addEventListener('input',e=>{ctx.strokeStyle=e.target.value;});
+}
+
+/* ===== PIÈCES ===== */
+function addP(){
+  const id=++pCnt;
+  pieces.push({id});
+  renderPiece(id);
+  autoSave();
+}
+
+function removeP(id){
+  pushUndo();
+  pieces=pieces.filter(p=>p.id!==id);
+  const el=document.getElementById(`pc-${id}`);
+  if(el)el.remove();
+  delete canvases[id];
+  autoSave();
+}
 
 function renderP(){
   const c=document.getElementById('pc');c.innerHTML='';
-  pieces.forEach(p=>{
-    const prestHTML=PREST.map(pr=>{
-      let right='';
-      if(pr.zone==='choice')right=`<select class="zsel" id="zone-${pr.id}-${p.id}"><option value="murs">Murs</option><option value="plaf">Plafond</option><option value="both">Les deux</option></select>`;
-      else if(pr.zone==='murs')right=`<span class="surf-tag">murs</span>`;
-      else if(pr.zone==='ml')right=`<span class="surf-tag">ML auto</span>`;
-      return `<div class="prow"><div class="prow-left"><input type="checkbox" id="ck-${pr.id}-${p.id}"><span>${pr.label} (<span class="euro">${pr.pu} €/${pr.u}</span>)</span></div>${right}</div>`;
-    }).join('');
-    c.innerHTML+=`
-    <div class="card" id="pc-${p.id}">
-      <div class="ph">
-        <input type="text" placeholder="Nom de la pièce (ex: Salon)" id="pnom-${p.id}" style="flex:1;font-size:14px;font-weight:700;border:none;background:transparent;padding:0;color:#1a1a1a">
-        <button class="rbtn" onclick="removeP(${p.id})">✕</button>
+  pieces.forEach(p=>renderPiece(p.id));
+}
+
+function renderPiece(id){
+  const c=document.getElementById('pc');
+  const prestHTML=PREST.map(pr=>{
+    let right='';
+    if(pr.zone==='choice'){
+      const defVal=pr.def||'murs';
+      right=`<select class="zsel" id="zone-${pr.id}-${id}" onchange="autoSaveWithUndo()"><option value="murs"${defVal==='murs'?' selected':''}>Murs</option><option value="plaf"${defVal==='plaf'?' selected':''}>Plafond</option><option value="both"${defVal==='both'?' selected':''}>Les deux</option></select>`;
+    } else if(pr.zone==='murs'){right=`<span class="surf-tag">murs</span>`;}
+    else if(pr.zone==='plaf'){right=`<span class="surf-tag">sol/plafond</span>`;}
+    else if(pr.zone==='ml'){right=`<span class="surf-tag">ML auto</span>`;}
+    return `<div class="prow"><div class="prow-left"><input type="checkbox" id="ck-${pr.id}-${id}" onchange="autoSaveWithUndo()"><span>${pr.label} (<span class="euro">${pr.pu} €/${pr.u}</span>)</span></div>${right}</div>`;
+  }).join('');
+
+  const div=document.createElement('div');
+  div.className='card';div.id=`pc-${id}`;
+  div.innerHTML=`
+    <div class="ph">
+      <input type="text" placeholder="Nom de la pièce (ex: Salon)" id="pnom-${id}" style="flex:1;font-size:14px;font-weight:700;border:none;background:transparent;padding:0;color:#1a1a1a" oninput="autoSave()" onfocus="pushUndo()">
+      <button class="rbtn" onclick="removeP(${id})">✕</button>
+    </div>
+    <div class="sl">Dimensions</div>
+    <div class="r4">
+      <div><label>Mur 1 (m)</label><input type="number" id="m1-${id}" min="0" step="0.1" oninput="upd(${id});autoSave()"></div>
+      <div><label>Mur 2 (m)</label><input type="number" id="m2-${id}" min="0" step="0.1" oninput="upd(${id});autoSave()"></div>
+      <div><label>Hauteur (m)</label><input type="number" id="hh-${id}" min="0" step="0.1" placeholder="2.5" oninput="upd(${id});autoSave()"></div>
+      <div><label>Nb murs</label><select id="nm-${id}" onchange="upd(${id});autoSave()"><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option></select></div>
+    </div>
+    <div class="r2">
+      <div><label>Plafond/sol m² (si diff.)</label><input type="number" id="plaf-${id}" min="0" step="0.5" placeholder="auto" oninput="upd(${id});autoSave()"></div>
+      <div style="display:flex;align-items:center;gap:8px;padding-top:18px">
+        <label class="ck-label"><input type="checkbox" id="has-pl-${id}" onchange="upd(${id});autoSave()"> Plinthes</label>
+        <span id="ml-prev-${id}" style="font-size:11px;color:#888"></span>
       </div>
-      <div class="sl">Dimensions</div>
-      <div class="r4">
-        <div><label>Mur 1 (m)</label><input type="number" id="m1-${p.id}" min="0" step="0.1" oninput="upd(${p.id})"></div>
-        <div><label>Mur 2 (m)</label><input type="number" id="m2-${p.id}" min="0" step="0.1" oninput="upd(${p.id})"></div>
-        <div><label>Hauteur (m)</label><input type="number" id="hh-${p.id}" min="0" step="0.1" placeholder="2.5" oninput="upd(${p.id})"></div>
-        <div><label>Nb murs</label><select id="nm-${p.id}" onchange="upd(${p.id})"><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option></select></div>
+    </div>
+    <div class="prev" id="prev-${id}"></div>
+    <hr class="div">
+    <div class="sl">Prestations</div>
+    ${prestHTML}
+    <hr class="div">
+    <button class="note-toggle" onclick="toggleZone('note-p-${id}')">✏️ Notes clavier</button>
+    <div class="note-zone hidden" id="note-p-${id}"><textarea placeholder="Notes pour cette pièce..." oninput="autoSave()" onfocus="pushUndo()"></textarea></div>
+    <button class="note-toggle" onclick="toggleZone('canvas-wrap-${id}');initCanvas(${id})">🖊 Croquis Pencil</button>
+    <div class="canvas-wrap hidden" id="canvas-wrap-${id}">
+      <div class="canvas-toolbar">
+        <button id="btn-pen-${id}" class="active">✏️ Stylo</button>
+        <button id="btn-eraser-${id}">⬜ Gomme</button>
+        <input type="color" id="btn-color-${id}" value="#1a1a1a" title="Couleur">
+        <button id="btn-clear-${id}" style="margin-left:auto;color:#e74c3c">🗑 Effacer</button>
       </div>
-      <div class="r2">
-        <div><label>Plafond m² (si diff.)</label><input type="number" id="plaf-${p.id}" min="0" step="0.5" placeholder="auto" oninput="upd(${p.id})"></div>
-        <div style="display:flex;align-items:center;gap:8px;padding-top:18px">
-          <label class="ck-label"><input type="checkbox" id="has-pl-${p.id}" onchange="upd(${p.id})"> Plinthes</label>
-          <span id="ml-prev-${p.id}" style="font-size:11px;color:#888"></span>
-        </div>
-      </div>
-      <div class="prev" id="prev-${p.id}"></div>
-      <hr class="div">
-      <div class="sl">Prestations à réaliser</div>
-      ${prestHTML}
-      <button class="note-toggle" onclick="toggleNote('note-p-${p.id}')">✏️ Remarques</button>
-      <div class="note-zone hidden" id="note-p-${p.id}"><textarea placeholder="Remarques pour cette pièce..."></textarea></div>
+      <canvas id="canvas-${id}" style="width:100%;height:200px;background:#fff"></canvas>
     </div>`;
-  });
+  c.appendChild(div);
 }
 
 function getSurf(id){
@@ -423,7 +595,7 @@ function getSurf(id){
 function upd(id){
   const s=getSurf(id);
   const prev=document.getElementById(`prev-${id}`);
-  if(prev){let t='';if(s.murs>0)t+=`Murs : ${s.murs.toFixed(1)} m²`;if(s.plaf>0)t+=(t?' · ':'')+`Plafond : ${s.plaf.toFixed(1)} m²`;prev.textContent=t;}
+  if(prev){let t='';if(s.murs>0)t+=`Murs : ${s.murs.toFixed(1)} m²`;if(s.plaf>0)t+=(t?' · ':'')+`Sol/Plafond : ${s.plaf.toFixed(1)} m²`;prev.textContent=t;}
   const mlp=document.getElementById(`ml-prev-${id}`);
   if(mlp)mlp.textContent=s.ml>0?`→ ${s.ml.toFixed(1)} ML`:'';
 }
@@ -434,58 +606,60 @@ function getQte(pr,pid){
   if(pr.zone==='plaf')return s.plaf;
   if(pr.zone==='ml')return s.ml;
   if(pr.zone==='choice'){
-    const z=document.getElementById(`zone-${pr.id}-${pid}`)?.value||'murs';
+    const z=document.getElementById(`zone-${pr.id}-${pid}`)?.value||(pr.def||'murs');
     if(z==='murs')return s.murs;if(z==='plaf')return s.plaf;if(z==='both')return parseFloat((s.murs+s.plaf).toFixed(2));
   }
   return 0;
 }
 
 function getZL(pr,pid){
-  if(pr.zone==='murs')return 'murs';if(pr.zone==='plaf')return 'plafond';if(pr.zone==='ml')return '';
-  if(pr.zone==='choice'){const z=document.getElementById(`zone-${pr.id}-${pid}`)?.value||'murs';if(z==='murs')return 'murs';if(z==='plaf')return 'plafond';if(z==='both')return 'murs + plafond';}
+  if(pr.zone==='murs')return 'murs';if(pr.zone==='plaf')return 'sol/plafond';if(pr.zone==='ml')return '';
+  if(pr.zone==='choice'){const z=document.getElementById(`zone-${pr.id}-${pid}`)?.value||(pr.def||'murs');if(z==='murs')return 'murs';if(z==='plaf')return 'plafond';if(z==='both')return 'murs + plafond';}
   return '';
 }
 
 function v(id){const e=document.getElementById(id);return e?parseFloat(e.value)||0:0;}
 function chk(id){const e=document.getElementById(id);return e?e.checked:false;}
+function toggleZone(id){document.getElementById(id)?.classList.toggle('hidden');}
 
-function addPorte(){const id=++ptCnt;portes.push({id});renderPortes();}
-function removePorte(id){portes=portes.filter(p=>p.id!==id);renderPortes();}
+/* ===== MENUISERIES ===== */
+function addPorte(){const id=++ptCnt;portes.push({id});renderPortes();autoSave();}
+function removePorte(id){pushUndo();portes=portes.filter(p=>p.id!==id);renderPortes();autoSave();}
 function renderPortes(){
   const c=document.getElementById('pl');c.innerHTML='';
   portes.forEach(p=>{c.innerHTML+=`
     <div class="men-row">
-      <div><label>Type</label><select id="ptyp-${p.id}"><option value="classique">Porte classique</option><option value="entree">Porte d'entrée</option><option value="petit_s">Petit carreau simple</option><option value="petit_d">Petit carreau double</option><option value="placard_s">Placard simple</option><option value="placard_d">Placard double</option></select></div>
-      <div><label>Qté</label><input type="number" id="pqte-${p.id}" min="1" value="1" step="1"></div>
-      <div><label>Faces</label><select id="pface-${p.id}"><option value="2">2 faces</option><option value="1">1 face</option></select></div>
-      <button class="rbtn" style="padding-bottom:6px" onclick="removePorte(${p.id})">✕</button>
+      <div><label>Type</label><select id="ptyp-${p.id}" onchange="autoSaveWithUndo()"><option value="classique">Porte classique</option><option value="entree">Porte d'entrée</option><option value="petit_s">Petit carreau simple</option><option value="petit_d">Petit carreau double</option><option value="placard_s">Placard simple</option><option value="placard_d">Placard double</option></select></div>
+      <div><label>Qté</label><input type="number" id="pqte-${p.id}" min="1" value="1" step="1" oninput="autoSave()" onfocus="pushUndo()"></div>
+      <div><label>Faces</label><select id="pface-${p.id}" onchange="autoSaveWithUndo()"><option value="2">2 faces</option><option value="1">1 face</option></select></div>
+      <button class="rbtn" onclick="removePorte(${p.id})">✕</button>
     </div>`;});
 }
 
-function addFen(){const id=++fCnt;fens.push({id});renderFens();}
-function removeFen(id){fens=fens.filter(f=>f.id!==id);renderFens();}
+function addFen(){const id=++fCnt;fens.push({id});renderFens();autoSave();}
+function removeFen(id){pushUndo();fens=fens.filter(f=>f.id!==id);renderFens();autoSave();}
 function renderFens(){
   const c=document.getElementById('fl');c.innerHTML='';
   fens.forEach(f=>{c.innerHTML+=`
     <div class="men-row">
-      <div><label>Type</label><select id="ftyp-${f.id}"><option value="simple">Fenêtre simple</option><option value="double">Fenêtre double</option><option value="pf_simple">Porte-fenêtre simple</option><option value="pf_double">Porte-fenêtre double</option></select></div>
-      <div><label>Qté</label><input type="number" id="fqte-${f.id}" min="1" value="1" step="1"></div>
-      <div><label>Faces</label><select id="fface-${f.id}"><option value="2">2 faces</option><option value="1">1 face</option></select></div>
-      <button class="rbtn" style="padding-bottom:6px" onclick="removeFen(${f.id})">✕</button>
+      <div><label>Type</label><select id="ftyp-${f.id}" onchange="autoSaveWithUndo()"><option value="simple">Fenêtre simple</option><option value="double">Fenêtre double</option><option value="pf_simple">Porte-fenêtre simple</option><option value="pf_double">Porte-fenêtre double</option></select></div>
+      <div><label>Qté</label><input type="number" id="fqte-${f.id}" min="1" value="1" step="1" oninput="autoSave()" onfocus="pushUndo()"></div>
+      <div><label>Faces</label><select id="fface-${f.id}" onchange="autoSaveWithUndo()"><option value="2">2 faces</option><option value="1">1 face</option></select></div>
+      <button class="rbtn" onclick="removeFen(${f.id})">✕</button>
     </div>`;});
 }
 
-function addVolet(){const id=++vCnt;volets.push({id});renderVolets();}
-function removeVolet(id){volets=volets.filter(v=>v.id!==id);renderVolets();}
+function addVolet(){const id=++vCnt;volets.push({id});renderVolets();autoSave();}
+function removeVolet(id){pushUndo();volets=volets.filter(v=>v.id!==id);renderVolets();autoSave();}
 function renderVolets(){
   const c=document.getElementById('vl');c.innerHTML='';
   volets.forEach(vo=>{c.innerHTML+=`
     <div class="volet-row">
-      <div><label>Largeur (m)</label><input type="number" id="vl-${vo.id}" min="0" step="0.01" oninput="updVolet(${vo.id})"></div>
-      <div><label>Hauteur (m)</label><input type="number" id="vh-${vo.id}" min="0" step="0.01" oninput="updVolet(${vo.id})"></div>
+      <div><label>Larg. (m)</label><input type="number" id="vl-${vo.id}" min="0" step="0.01" oninput="updVolet(${vo.id});autoSave()"></div>
+      <div><label>Haut. (m)</label><input type="number" id="vh-${vo.id}" min="0" step="0.01" oninput="updVolet(${vo.id});autoSave()"></div>
       <div><label>m² 2f</label><input type="text" id="vs-${vo.id}" readonly style="background:#f0f0f0;color:#888;text-align:center" value="—"></div>
-      <div><label>Qté</label><input type="number" id="vq-${vo.id}" min="1" value="1" step="1"></div>
-      <button class="rbtn" style="padding-bottom:6px" onclick="removeVolet(${vo.id})">✕</button>
+      <div><label>Qté</label><input type="number" id="vq-${vo.id}" min="1" value="1" step="1" oninput="autoSave()" onfocus="pushUndo()"></div>
+      <button class="rbtn" onclick="removeVolet(${vo.id})">✕</button>
     </div>`;});
 }
 
@@ -493,18 +667,19 @@ function updVolet(id){
   const l=parseFloat(document.getElementById(`vl-${id}`)?.value)||0;
   const h=parseFloat(document.getElementById(`vh-${id}`)?.value)||0;
   const surf=parseFloat((l*h*2).toFixed(2));
-  const el=document.getElementById(`vs-${id}`);
-  if(el)el.value=surf>0?`${surf} m²`:'—';
+  const el=document.getElementById(`vs-${id}`);if(el)el.value=surf>0?`${surf} m²`:'—';
 }
 
-function toggleNote(id){document.getElementById(id).classList.toggle('hidden');}
-function togglePrices(){pricesHidden=!pricesHidden;document.body.classList.toggle('hide-prices',pricesHidden);document.getElementById('eyeText').textContent=pricesHidden?'Afficher':'Masquer';}
-
+/* ===== CALCUL ===== */
 function buildRows(){
   let rows=[],total=0;
   pieces.forEach(p=>{
     const nom=document.getElementById(`pnom-${p.id}`)?.value||`Pièce ${p.id}`;
-    rows.push({type:'section',label:nom.toUpperCase()});
+    const s=getSurf(p.id);
+    const m1=document.getElementById(`m1-${p.id}`)?.value||'';
+    const m2=document.getElementById(`m2-${p.id}`)?.value||'';
+    const hh=document.getElementById(`hh-${p.id}`)?.value||'';
+    rows.push({type:'section',label:nom.toUpperCase(),cotes:{m1,m2,hh,murs:s.murs,plaf:s.plaf,ml:s.ml}});
     let hasRows=false;
     PREST.forEach(pr=>{
       if(!chk(`ck-${pr.id}-${p.id}`))return;
@@ -516,7 +691,9 @@ function buildRows(){
     });
     const noteVal=document.querySelector(`#note-p-${p.id} textarea`)?.value||'';
     if(noteVal.trim())rows.push({type:'note',label:noteVal});
-    if(!hasRows&&!noteVal)rows.pop();
+    const canvasData=canvases[p.id]?canvases[p.id].toDataURL():'';
+    if(canvasData&&canvasData!==''&&canvasData.length>100)rows.push({type:'canvas',data:canvasData});
+    if(!hasRows&&!noteVal&&!canvasData)rows.pop();
   });
   if(chk('f-echaf')){rows.push({type:'section',label:'FORFAITS'});rows.push({label:'Montage/démontage échafaudage',qte:1,unite:'forfait',pu:450,montant:450});total+=450;}
   const pA=portes.filter(p=>v(`pqte-${p.id}`)>0);
@@ -530,22 +707,22 @@ function buildRows(){
     ['portes','fenetres','volets'].forEach(k=>{const n=document.querySelector(`#note-${k} textarea`)?.value||'';if(n.trim())rows.push({type:'note',label:n});});
   }
   total=parseFloat(total.toFixed(2));
-  const tva=parseFloat((total*0.10).toFixed(2));
-  const ttc=parseFloat((total+tva).toFixed(2));
-  return{rows,total,tva,ttc};
+  return{rows,total};
 }
 
 function calc(){
-  const{rows,total,tva,ttc}=buildRows();
-  window._rows=rows;window._tot={total,tva,ttc};
-  document.getElementById('total-block').innerHTML=`
-    <div class="line"><span>Total HT</span><span class="euro">${total.toFixed(2)} €</span></div>
-    <div class="line"><span>TVA 10%</span><span class="euro">${tva.toFixed(2)} €</span></div>
-    <div class="line big"><span>Total TTC</span><span class="euro">${ttc.toFixed(2)} €</span></div>`;
+  const{rows,total}=buildRows();
+  window._lastRows=rows;window._lastTotal=total;
+  document.getElementById('total-block').innerHTML=`<div class="line big"><span>Total HT</span><span class="euro">${total.toFixed(2)} €</span></div>`;
   let html=`<tr><th>Désignation</th><th class="rr">Qté</th><th class="rr">Unité</th><th class="rr euro">PU HT</th><th class="rr euro">Montant HT</th></tr>`;
   rows.forEach(r=>{
-    if(r.type==='section')html+=`<tr class="sr"><td colspan="5">${r.label}</td></tr>`;
-    else if(r.type==='note')html+=`<tr><td colspan="5" style="color:#888;font-style:italic;font-size:11px">${r.label.replace(/\n/g,'<br>')}</td></tr>`;
+    if(r.type==='section'){
+      let cotesTxt='';
+      if(r.cotes){const c=r.cotes;if(c.m1&&c.m2&&c.hh)cotesTxt=` <span style="font-weight:400;color:#999">${c.m1}m × ${c.m2}m × ${c.hh}m</span>`;}
+      html+=`<tr class="sr"><td colspan="5">${r.label}${cotesTxt}</td></tr>`;
+    }
+    else if(r.type==='note')html+=`<tr><td colspan="5" style="color:#888;font-style:italic;font-size:11px;padding:4px 6px">${r.label.replace(/\n/g,'<br>')}</td></tr>`;
+    else if(r.type==='canvas'){}
     else html+=`<tr><td>${r.label}</td><td class="rr">${r.qte}</td><td class="rr">${r.unite}</td><td class="rr euro">${r.pu.toFixed(2)} €</td><td class="rr euro">${r.montant.toFixed(2)} €</td></tr>`;
   });
   document.getElementById('rtbl').innerHTML=html;
@@ -553,30 +730,77 @@ function calc(){
   saveCurrentDevis();
 }
 
+/* ===== OEIL ===== */
+function togglePrices(){
+  pricesHidden=!pricesHidden;
+  document.body.classList.toggle('hide-prices',pricesHidden);
+  document.getElementById('eyeText').textContent=pricesHidden?'Afficher':'Masquer';
+}
+
+/* ===== COPIER MEG ===== */
 function copyR(){
-  const rows=window._rows||[];const t=window._tot||{};
+  const rows=window._lastRows||[];const total=window._lastTotal||0;
   let txt=`RÉCAP DEVIS — COULEURS DU SUD\n${document.getElementById('devis-name-display').textContent} — ${document.getElementById('devis-date-display').textContent}\n${'─'.repeat(52)}\n`;
   rows.forEach(r=>{
-    if(r.type==='section')txt+=`\n${r.label}\n`;
+    if(r.type==='section'){let c='';if(r.cotes&&r.cotes.m1)c=` (${r.cotes.m1}×${r.cotes.m2}×${r.cotes.hh}m)`;txt+=`\n${r.label}${c}\n`;}
     else if(r.type==='note')txt+=`  → ${r.label}\n`;
+    else if(r.type==='canvas'){}
     else txt+=`${r.label.padEnd(40)}${String(r.qte).padStart(6)} ${r.unite.padEnd(7)} ${r.pu.toFixed(0).padStart(5)}€  →  ${r.montant.toFixed(2)} €\n`;
   });
-  txt+=`\n${'─'.repeat(52)}\nTotal HT : ${t.total?.toFixed(2)} €\nTVA 10%  : ${t.tva?.toFixed(2)} €\nTotal TTC: ${t.ttc?.toFixed(2)} €\n`;
+  txt+=`\n${'─'.repeat(52)}\nTotal HT : ${total.toFixed(2)} €\n`;
   navigator.clipboard.writeText(txt).then(()=>{alert('Copié !');});
 }
 
+/* ===== EXPORT PDF ===== */
 function exportPDF(){
-  const{rows,total,tva,ttc}=buildRows();
+  const{rows,total}=buildRows();
   const name=document.getElementById('devis-name-display').textContent;
   const date=document.getElementById('devis-date-display').textContent;
   const showPrices=!pricesHidden;
-  const rowsHTML=rows.map(r=>{
-    if(r.type==='section')return`<tr style="background:#f5f4f0"><td colspan="5" style="padding:5px 8px;font-weight:700;font-size:11px;color:#666">${r.label}</td></tr>`;
-    if(r.type==='note')return`<tr><td colspan="5" style="padding:4px 8px;color:#888;font-style:italic;font-size:11px">${r.label.replace(/\n/g,'<br>')}</td></tr>`;
-    return`<tr><td style="padding:5px 8px;border-bottom:1px solid #f0f0f0">${r.label}</td><td style="padding:5px 8px;border-bottom:1px solid #f0f0f0;text-align:right">${r.qte}</td><td style="padding:5px 8px;border-bottom:1px solid #f0f0f0;text-align:right">${r.unite}</td><td style="padding:5px 8px;border-bottom:1px solid #f0f0f0;text-align:right">${showPrices?r.pu.toFixed(2)+' €':'—'}</td><td style="padding:5px 8px;border-bottom:1px solid #f0f0f0;text-align:right">${showPrices?r.montant.toFixed(2)+' €':'—'}</td></tr>`;
-  }).join('');
-  const totauxHTML=showPrices?`<div style="margin-top:16px;background:#1a1a1a;color:#fff;padding:14px 16px;border-radius:8px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Total HT</span><span>${total.toFixed(2)} €</span></div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>TVA 10%</span><span>${tva.toFixed(2)} €</span></div><div style="display:flex;justify-content:space-between;font-size:18px;font-weight:700;margin-top:8px;padding-top:8px;border-top:1px solid #444"><span>Total TTC</span><span>${ttc.toFixed(2)} €</span></div></div>`:'';
-  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Devis ${name}</title><style>body{font-family:-apple-system,Arial,sans-serif;color:#1a1a1a;padding:24px;font-size:13px}h1{font-size:18px;font-weight:700}h2{font-size:13px;color:#999;font-weight:400;margin-top:2px}table{width:100%;border-collapse:collapse;margin-top:16px}th{text-align:left;font-size:10px;color:#999;font-weight:700;padding:5px 8px;border-bottom:1px solid #ddd}@media print{body{padding:0}}</style></head><body><h1>Devis — ${name}</h1><h2>SAS Couleurs du Sud · ${date}</h2><table><thead><tr><th>Désignation</th><th style="text-align:right">Qté</th><th style="text-align:right">Unité</th><th style="text-align:right">PU HT</th><th style="text-align:right">Montant HT</th></tr></thead><tbody>${rowsHTML}</tbody></table>${totauxHTML}</body></html>`;
+
+  let bodyHTML=`<h1>Devis — ${name}</h1><h2>SAS Couleurs du Sud · ${date}</h2>`;
+  let tableRows='';let inTable=false;
+
+  rows.forEach(r=>{
+    if(r.type==='section'){
+      if(inTable){bodyHTML+=`<table><thead><tr><th>Désignation</th><th>Qté</th><th>Unité</th>${showPrices?'<th>PU HT</th><th>Montant HT</th>':''}</tr></thead><tbody>${tableRows}</tbody></table>`;tableRows='';inTable=false;}
+      let cotesTxt='';
+      if(r.cotes&&r.cotes.m1&&r.cotes.m2&&r.cotes.hh){const c=r.cotes;cotesTxt=`<br><span style="font-size:11px;color:#888;font-weight:400">Mur 1: ${c.m1}m · Mur 2: ${c.m2}m · Hauteur: ${c.hh}m`;if(c.murs>0)cotesTxt+=` · Murs: ${c.murs}m²`;if(c.plaf>0)cotesTxt+=` · Sol/Plafond: ${c.plaf}m²`;cotesTxt+='</span>';}
+      bodyHTML+=`<div class="section-header">${r.label}${cotesTxt}</div>`;
+      inTable=true;
+    } else if(r.type==='note'){
+      if(inTable){bodyHTML+=`<table><thead><tr><th>Désignation</th><th>Qté</th><th>Unité</th>${showPrices?'<th>PU HT</th><th>Montant HT</th>':''}</tr></thead><tbody>${tableRows}</tbody></table>`;tableRows='';inTable=false;}
+      bodyHTML+=`<div class="note-box">${r.label.replace(/\n/g,'<br>')}</div>`;
+      inTable=false;
+    } else if(r.type==='canvas'){
+      if(inTable){bodyHTML+=`<table><thead><tr><th>Désignation</th><th>Qté</th><th>Unité</th>${showPrices?'<th>PU HT</th><th>Montant HT</th>':''}</tr></thead><tbody>${tableRows}</tbody></table>`;tableRows='';inTable=false;}
+      bodyHTML+=`<div class="canvas-box"><img src="${r.data}" style="max-width:100%;border-radius:6px"></div>`;
+    } else {
+      if(!inTable)inTable=true;
+      tableRows+=`<tr><td>${r.label}</td><td>${r.qte}</td><td>${r.unite}</td>${showPrices?`<td>${r.pu.toFixed(2)} €</td><td>${r.montant.toFixed(2)} €</td>`:''}`;
+    }
+  });
+  if(inTable&&tableRows)bodyHTML+=`<table><thead><tr><th>Désignation</th><th>Qté</th><th>Unité</th>${showPrices?'<th>PU HT</th><th>Montant HT</th>':''}</tr></thead><tbody>${tableRows}</tbody></table>`;
+  if(showPrices)bodyHTML+=`<div class="total-box"><div class="total-line big"><span>Total HT</span><span>${total.toFixed(2)} €</span></div></div>`;
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Devis ${name}</title>
+  <style>
+    body{font-family:-apple-system,Arial,sans-serif;color:#1a1a1a;padding:20px;font-size:13px;max-width:800px;margin:0 auto}
+    h1{font-size:20px;font-weight:700;margin-bottom:4px}
+    h2{font-size:12px;color:#999;font-weight:400;margin-bottom:20px}
+    .section-header{background:#f5f4f0;padding:6px 10px;font-weight:700;font-size:12px;color:#444;margin-top:16px;margin-bottom:0;border-radius:6px 6px 0 0}
+    table{width:100%;border-collapse:collapse;margin-bottom:8px}
+    th{text-align:left;font-size:10px;color:#999;font-weight:700;padding:5px 8px;border-bottom:1px solid #ddd;background:#fafaf8}
+    td{padding:5px 8px;border-bottom:1px solid #f0f0f0;font-size:12px}
+    td:not(:first-child){text-align:right}
+    .note-box{background:#fffbf0;border-left:3px solid #f0c040;padding:8px 12px;margin:6px 0;font-style:italic;color:#666;font-size:12px;border-radius:0 6px 6px 0}
+    .canvas-box{margin:8px 0;border:1px solid #eee;border-radius:6px;padding:8px;background:#fafaf8}
+    .total-box{margin-top:20px;background:#1a1a1a;color:#fff;padding:14px 16px;border-radius:8px}
+    .total-line{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
+    .total-line.big{font-size:18px;font-weight:700}
+    @media print{body{padding:0}@page{margin:15mm}}
+  </style></head><body>${bodyHTML}</body></html>`;
+
   const blob=new Blob([html],{type:'text/html'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
